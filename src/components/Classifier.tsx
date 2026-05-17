@@ -20,8 +20,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
   const [result, setResult] = useState<ClassifyResult | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [guess, setGuess] = useState<VibeLabel | null>(null);
-  const [reveal, setReveal] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const imageVibe = useMemo(() => mockImageVibe(imageFile), [imageFile]);
@@ -31,7 +29,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
     if (!text.trim()) return;
     const r = classifyText(text);
     setResult(r);
-    setReveal(true);
     if (challengeTarget && onChallengeScore) {
       const score = Math.round((r.probs[challengeTarget] || 0) * 100);
       onChallengeScore(score, r.top);
@@ -63,24 +60,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
           placeholder="Paste a social media caption or write your own..."
           className="h-40 w-full resize-none border bg-background p-3 font-mono text-sm outline-none focus:border-foreground"
         />
-
-        {/* Guess before AI */}
-        <div className="mt-4 border-t pt-4">
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Guess Before AI · optional
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {VIBE_ORDER.map((l) => (
-              <button
-                key={l}
-                onClick={() => setGuess(l)}
-                className={`label-chip hover-lift ${guess === l ? "bg-foreground text-background" : ""}`}
-              >
-                {VIBES[l].emoji} {VIBES[l].name}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Image upload */}
         <div className="mt-4 border-t pt-4">
@@ -155,8 +134,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
             text={text}
             imageVibe={imageVibe}
             combined={combined}
-            guess={guess}
-            reveal={reveal}
           />
         )}
       </div>
@@ -169,15 +146,11 @@ function ResultView({
   text,
   imageVibe,
   combined,
-  guess,
-  reveal,
 }: {
   result: ClassifyResult;
   text: string;
   imageVibe: ReturnType<typeof mockImageVibe>;
   combined: { label: VibeLabel; confidence: number } | null;
-  guess: VibeLabel | null;
-  reveal: boolean;
 }) {
   const top = VIBES[result.top];
   return (
@@ -268,12 +241,6 @@ function ResultView({
         </div>
       )}
 
-      {guess && reveal && (
-        <div className="border border-dashed p-3 font-mono text-xs">
-          You guessed {VIBES[guess].emoji} {VIBES[guess].name} — model said {VIBES[result.top].emoji} {VIBES[result.top].name}.{" "}
-          {guess === result.top ? "✓ match!" : "✗ different — interesting case."}
-        </div>
-      )}
     </div>
   );
 }
