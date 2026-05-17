@@ -1,5 +1,6 @@
 import { Link, Outlet } from "@tanstack/react-router";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { EmojiBackground } from "@/components/EmojiBackground";
 
 const LINKS = [
   { label: "Home", to: "/" },
