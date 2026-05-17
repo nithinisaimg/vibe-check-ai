@@ -13,7 +13,8 @@ const LINKS = [
 
 export function SiteLayout() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen bg-background text-foreground">
+      <EmojiBackground />
       <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="font-display text-sm font-bold uppercase tracking-[0.2em]">
