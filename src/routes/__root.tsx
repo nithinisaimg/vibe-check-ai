@@ -79,10 +79,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "AI/ML classroom demo: explainable multi-class text + image vibe classifier." },
       { name: "author", content: "VibeCheck" },
       { property: "og:title", content: "Vibe Check — Social Media Post Classifier" },
-      { property: "og:description", content: "Explainable multi-class classifier across Rant, Wholesome, Humor, Sad, Hype." },
+      { property: "og:description", content: "AI/ML classroom demo: explainable multi-class text + image vibe classifier." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Vibe Check — Social Media Post Classifier" },
+      { name: "twitter:description", content: "AI/ML classroom demo: explainable multi-class text + image vibe classifier." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c270522a-f0ea-4abc-b34b-8d0b851cfbce/id-preview-5b0f5f4d--5f32b187-fac7-4593-8f63-c879229198f3.lovable.app-1779159302310.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c270522a-f0ea-4abc-b34b-8d0b851cfbce/id-preview-5b0f5f4d--5f32b187-fac7-4593-8f63-c879229198f3.lovable.app-1779159302310.png" },
     ],
     links: [
       {
