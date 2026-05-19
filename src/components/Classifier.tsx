@@ -1,8 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import {
   classifyText,
-  combineVibes,
-  mockImageVibe,
   VIBES,
   VIBE_ORDER,
   type VibeLabel,
