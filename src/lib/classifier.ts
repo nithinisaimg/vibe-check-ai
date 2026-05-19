@@ -119,13 +119,21 @@ export function classifyText(input: string): ClassifyResult {
   scores.humor += /(haha|lol|💀){2,}/i.test(text) ? 1.2 : 0;
   scores.sad += /\.\.\./.test(text) ? 0.6 : 0;
 
+  // Detect "no signal" — when no keywords hit and no punctuation cues fired,
+  // every class still sits at the 0.05 base and softmax would return a fake
+  // uniform 20% split. Flag it explicitly instead of pretending to predict.
+  const rawSignal = VIBE_ORDER.reduce((a, l) => a + (scores[l] - 0.05), 0);
+  const noSignal = hits.length === 0 && rawSignal < 0.01;
+
   const probs = softmax(scores);
-  let top: VibeLabel = "humor";
+  let top: VibeLabel = VIBE_ORDER[0];
   let max = -Infinity;
   for (const l of VIBE_ORDER) if (probs[l] > max) (max = probs[l]), (top = l);
 
-  const explanation = buildExplanation(top, hits, probs);
-  return { scores, probs, top, confidence: max, hits, explanation };
+  const explanation = noSignal
+    ? `No known vibe keywords or tone markers detected — model has no evidence to lean on, so all classes stay near the 20% uniform prior. Try a caption with more emotion or slang.`
+    : buildExplanation(top, hits, probs);
+  return { scores, probs, top, confidence: noSignal ? 0.2 : max, hits, explanation };
 }
 
 function buildExplanation(top: VibeLabel, hits: TokenHit[], probs: Record<VibeLabel, number>): string {
