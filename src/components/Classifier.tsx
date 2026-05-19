@@ -47,39 +47,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
           className="h-40 w-full resize-none border bg-background p-3 font-mono text-sm outline-none focus:border-foreground"
         />
 
-        {/* Image upload */}
-        <div className="mt-4 border-t pt-4">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Image Vibe · optional
-            </span>
-            {imageFile && (
-              <button
-                onClick={() => {
-                  setImageFile(null);
-                  setImagePreview(null);
-                  if (fileRef.current) fileRef.current.value = "";
-                }}
-                className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
-              >
-                Remove
-              </button>
-            )}
-          </div>
-          <label className="flex cursor-pointer items-center gap-3 border border-dashed p-3 hover-lift">
-            <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
-            {imagePreview ? (
-              <img src={imagePreview} alt="upload" className="h-14 w-14 border object-cover grayscale" />
-            ) : (
-              <div className="flex h-14 w-14 items-center justify-center border font-mono text-xs text-muted-foreground">
-                IMG
-              </div>
-            )}
-            <span className="font-mono text-xs text-muted-foreground">
-              {imageFile ? imageFile.name : "Drop or select an image to analyze visual vibe"}
-            </span>
-          </label>
-        </div>
 
         <button
           onClick={handleClassify}
