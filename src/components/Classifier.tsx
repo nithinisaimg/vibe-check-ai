@@ -82,12 +82,7 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
             </p>
           </div>
         ) : (
-          <ResultView
-            result={result}
-            text={text}
-            imageVibe={imageVibe}
-            combined={combined}
-          />
+          <ResultView result={result} text={text} />
         )}
       </div>
     </div>
