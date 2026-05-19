@@ -16,12 +16,6 @@ interface Props {
 export function Classifier({ initialText = "", challengeTarget = null, onChallengeScore }: Props) {
   const [text, setText] = useState(initialText);
   const [result, setResult] = useState<ClassifyResult | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const imageVibe = useMemo(() => mockImageVibe(imageFile), [imageFile]);
-  const combined = useMemo(() => (result ? combineVibes(result, imageVibe) : null), [result, imageVibe]);
 
   function handleClassify() {
     if (!text.trim()) return;
@@ -33,12 +27,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
     }
   }
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0] || null;
-    setImageFile(f);
-    if (f) setImagePreview(URL.createObjectURL(f));
-    else setImagePreview(null);
-  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
