@@ -69,10 +69,10 @@ export interface ClassifyResult {
   explanation: string;
 }
 
-function softmax(scores: Record<VibeLabel, number>): Record<VibeLabel, number> {
+function softmax(scores: Record<VibeLabel, number>, temp = 1.6): Record<VibeLabel, number> {
   const vals = VIBE_ORDER.map((l) => scores[l]);
   const max = Math.max(...vals);
-  const exps = vals.map((v) => Math.exp((v - max) * 0.9));
+  const exps = vals.map((v) => Math.exp((v - max) * temp));
   const sum = exps.reduce((a, b) => a + b, 0) || 1;
   const out = {} as Record<VibeLabel, number>;
   VIBE_ORDER.forEach((l, i) => (out[l] = exps[i] / sum));
