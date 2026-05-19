@@ -1,8 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import {
   classifyText,
-  combineVibes,
-  mockImageVibe,
   VIBES,
   VIBE_ORDER,
   type VibeLabel,
@@ -18,12 +16,6 @@ interface Props {
 export function Classifier({ initialText = "", challengeTarget = null, onChallengeScore }: Props) {
   const [text, setText] = useState(initialText);
   const [result, setResult] = useState<ClassifyResult | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const imageVibe = useMemo(() => mockImageVibe(imageFile), [imageFile]);
-  const combined = useMemo(() => (result ? combineVibes(result, imageVibe) : null), [result, imageVibe]);
 
   function handleClassify() {
     if (!text.trim()) return;
@@ -35,12 +27,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
     }
   }
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0] || null;
-    setImageFile(f);
-    if (f) setImagePreview(URL.createObjectURL(f));
-    else setImagePreview(null);
-  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
@@ -61,39 +47,6 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
           className="h-40 w-full resize-none border bg-background p-3 font-mono text-sm outline-none focus:border-foreground"
         />
 
-        {/* Image upload */}
-        <div className="mt-4 border-t pt-4">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Image Vibe · optional
-            </span>
-            {imageFile && (
-              <button
-                onClick={() => {
-                  setImageFile(null);
-                  setImagePreview(null);
-                  if (fileRef.current) fileRef.current.value = "";
-                }}
-                className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
-              >
-                Remove
-              </button>
-            )}
-          </div>
-          <label className="flex cursor-pointer items-center gap-3 border border-dashed p-3 hover-lift">
-            <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
-            {imagePreview ? (
-              <img src={imagePreview} alt="upload" className="h-14 w-14 border object-cover grayscale" />
-            ) : (
-              <div className="flex h-14 w-14 items-center justify-center border font-mono text-xs text-muted-foreground">
-                IMG
-              </div>
-            )}
-            <span className="font-mono text-xs text-muted-foreground">
-              {imageFile ? imageFile.name : "Drop or select an image to analyze visual vibe"}
-            </span>
-          </label>
-        </div>
 
         <button
           onClick={handleClassify}
@@ -129,12 +82,7 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
             </p>
           </div>
         ) : (
-          <ResultView
-            result={result}
-            text={text}
-            imageVibe={imageVibe}
-            combined={combined}
-          />
+          <ResultView result={result} text={text} />
         )}
       </div>
     </div>
@@ -144,13 +92,9 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
 function ResultView({
   result,
   text,
-  imageVibe,
-  combined,
 }: {
   result: ClassifyResult;
   text: string;
-  imageVibe: ReturnType<typeof mockImageVibe>;
-  combined: { label: VibeLabel; confidence: number } | null;
 }) {
   const top = VIBES[result.top];
   return (
@@ -210,40 +154,10 @@ function ResultView({
           → {result.explanation}
         </p>
       </div>
-
-      {/* Image + combined */}
-      {imageVibe && (
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="border bg-background p-3">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Image Vibe
-            </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl">{VIBES[imageVibe.label].emoji}</span>
-              <span className="font-display font-bold">{VIBES[imageVibe.label].name}</span>
-              <span className="ml-auto font-mono text-xs">{Math.round(imageVibe.confidence * 100)}%</span>
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">{imageVibe.note}</p>
-          </div>
-          <div className="border bg-foreground p-3 text-background">
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-70">
-              Combined Vibe
-            </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl">{combined && VIBES[combined.label].emoji}</span>
-              <span className="font-display font-bold">{combined && VIBES[combined.label].name}</span>
-              <span className="ml-auto font-mono text-xs">
-                {combined && Math.round(combined.confidence * 100)}%
-              </span>
-            </div>
-            <p className="mt-2 text-xs opacity-70">Text + image weighted fusion.</p>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
+
 
 function highlight(text: string, result: ClassifyResult) {
   if (!result.hits.length) return <span className="text-muted-foreground">{text}</span>;
