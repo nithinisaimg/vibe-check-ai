@@ -92,13 +92,9 @@ export function Classifier({ initialText = "", challengeTarget = null, onChallen
 function ResultView({
   result,
   text,
-  imageVibe,
-  combined,
 }: {
   result: ClassifyResult;
   text: string;
-  imageVibe: ReturnType<typeof mockImageVibe>;
-  combined: { label: VibeLabel; confidence: number } | null;
 }) {
   const top = VIBES[result.top];
   return (
@@ -158,40 +154,10 @@ function ResultView({
           → {result.explanation}
         </p>
       </div>
-
-      {/* Image + combined */}
-      {imageVibe && (
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="border bg-background p-3">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Image Vibe
-            </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl">{VIBES[imageVibe.label].emoji}</span>
-              <span className="font-display font-bold">{VIBES[imageVibe.label].name}</span>
-              <span className="ml-auto font-mono text-xs">{Math.round(imageVibe.confidence * 100)}%</span>
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">{imageVibe.note}</p>
-          </div>
-          <div className="border bg-foreground p-3 text-background">
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-70">
-              Combined Vibe
-            </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl">{combined && VIBES[combined.label].emoji}</span>
-              <span className="font-display font-bold">{combined && VIBES[combined.label].name}</span>
-              <span className="ml-auto font-mono text-xs">
-                {combined && Math.round(combined.confidence * 100)}%
-              </span>
-            </div>
-            <p className="mt-2 text-xs opacity-70">Text + image weighted fusion.</p>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
+
 
 function highlight(text: string, result: ClassifyResult) {
   if (!result.hits.length) return <span className="text-muted-foreground">{text}</span>;
